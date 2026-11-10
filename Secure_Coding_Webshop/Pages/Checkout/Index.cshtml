@@ -1,0 +1,36 @@
+@page
+@model Secure_Coding_Webshop.Pages.Checkout.IndexModel
+@{ ViewData["Title"] = "Kassen"; }
+
+<h1>Kassen</h1>
+
+@if (!Model.EmailConfirmed)
+{
+    <p role="alert">Du skal bekræfte din e-mail, før du kan handle. Tjek din indbakke.</p>
+}
+else
+{
+    <table>
+        <thead><tr><th>Produkt</th><th>Antal</th><th>I alt</th></tr></thead>
+        <tbody>
+        @foreach (var l in Model.Lines)
+        {
+            <tr><td>@l.Name</td><td>@l.Quantity</td><td>@l.LineTotal.ToString("N2") kr</td></tr>
+        }
+        </tbody>
+        <tfoot><tr><th colspan="2">Total</th><th>@Model.Total.ToString("N2") kr</th></tr></tfoot>
+    </table>
+
+    <form method="post">
+        <div asp-validation-summary="All"></div>
+        @* Nøglen genereres når siden vises. Dobbeltklik/genindlæsning giver samme ordre, ikke to. *@
+        <input type="hidden" asp-for="Input.IdempotencyKey" />
+        <label>Navn <input asp-for="Input.Name" maxlength="100" autocomplete="name" required /></label>
+        <label>Adresse <input asp-for="Input.AddressLine" maxlength="200" autocomplete="street-address" required /></label>
+        <label>Postnummer <input asp-for="Input.PostalCode" maxlength="10" autocomplete="postal-code" required /></label>
+        <label>By <input asp-for="Input.City" maxlength="100" autocomplete="address-level2" required /></label>
+        <input type="hidden" asp-for="Input.Country" />
+        <p>Du betaler hos vores betalingsudbyder. Vi ser aldrig dine kortoplysninger.</p>
+        <button type="submit">Betal @Model.Total.ToString("N2") kr</button>
+    </form>
+}

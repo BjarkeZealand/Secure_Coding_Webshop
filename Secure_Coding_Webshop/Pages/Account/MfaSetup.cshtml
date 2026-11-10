@@ -1,0 +1,42 @@
+@page
+@model Secure_Coding_Webshop.Pages.Account.MfaSetupModel
+@{ ViewData["Title"] = "To-faktor-login"; }
+
+<h1>To-faktor-login (MFA)</h1>
+
+@if (Model.BackupCodes is { } codes)
+{
+    <p role="status">MFA er aktiveret. Gem disse engangskoder et sikkert sted. De vises kun denne ene gang.</p>
+    <ul class="backup-codes">
+        @foreach (var c in codes) { <li><code>@c</code></li> }
+    </ul>
+}
+else if (Model.Profile is { MfaEnabled: true } profile)
+{
+    <p>MFA er aktiv. Du har @profile.UnusedBackupCodes ubrugte backupkoder.</p>
+    <form method="post" asp-page-handler="NewCodes"><button type="submit">Lav nye backupkoder</button></form>
+    @if (profile.RoleId == 1)
+    {
+        <form method="post" asp-page-handler="Disable"><button type="submit">Slå MFA fra</button></form>
+    }
+    else
+    {
+        <p>MFA er påkrævet for din rolle og kan ikke slås fra.</p>
+    }
+}
+else if (Model.Enrollment is { } e)
+{
+    <p>1. Scan QR-koden eller indtast nøglen i din authenticator-app. 2. Skriv den 6-cifrede kode herunder.</p>
+    <p>Nøgle: <code>@e.SecretBase32</code></p>
+    <p><a href="@e.OtpAuthUri">Åbn i authenticator-app</a></p>
+    <form method="post" asp-page-handler="Activate">
+        <div asp-validation-summary="All"></div>
+        <label>Kode <input asp-for="Code" inputmode="numeric" autocomplete="one-time-code" maxlength="6" required /></label>
+        <button type="submit">Aktivér</button>
+    </form>
+}
+else
+{
+    @if (Model.Profile?.RoleId >= 2) { <p role="alert">Din rolle kræver MFA. Aktivér det for at fortsætte.</p> }
+    <form method="post" asp-page-handler="Start"><button type="submit">Slå MFA til</button></form>
+}

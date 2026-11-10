@@ -1,0 +1,60 @@
+@page
+@model Secure_Coding_Webshop.Pages.Products.IndexModel
+@{ ViewData["Title"] = "Produkter"; }
+
+<h1>Produkter</h1>
+
+<form method="get" class="filters">
+    <input type="search" name="q" value="@Model.Q" maxlength="100" placeholder="Søg..." aria-label="Søg" />
+    <select name="category" aria-label="Kategori">
+        <option value="">Alle kategorier</option>
+        @foreach (var c in Model.Categories)
+        {
+            <option value="@c.CategoryId" selected="@(Model.Category == c.CategoryId)">@c.Name</option>
+        }
+    </select>
+    <select name="sort" aria-label="Sortering">
+        <option value="name_asc" selected="@(Model.Sort == "name_asc")">Navn A-Å</option>
+        <option value="name_desc" selected="@(Model.Sort == "name_desc")">Navn Å-A</option>
+        <option value="price_asc" selected="@(Model.Sort == "price_asc")">Pris lav-høj</option>
+        <option value="price_desc" selected="@(Model.Sort == "price_desc")">Pris høj-lav</option>
+        <option value="newest" selected="@(Model.Sort == "newest")">Nyeste</option>
+    </select>
+    <button type="submit">Søg</button>
+</form>
+
+@if (Model.Result.Items.Count == 0)
+{
+    <p>Ingen produkter matcher din søgning.</p>
+}
+else
+{
+    <p>@Model.Result.Total produkter</p>
+    <ul class="products">
+        @foreach (var p in Model.Result.Items)
+        {
+            <li>
+                @if (p.ImageFileName is not null)
+                {
+                    <img src="/img/@p.ImageFileName" alt="" width="120" height="120" loading="lazy" />
+                }
+                @* Razor HTML-encoder automatisk: beskrivelser er ren tekst og kan ikke indeholde script *@
+                <h2><a asp-page="Details" asp-route-id="@p.ProductId">@p.Name</a></h2>
+                <p>@p.ShortDescription</p>
+                <p><strong>@p.Price.ToString("N2") kr</strong> · @(p.StockQuantity > 0 ? "På lager" : "Udsolgt")</p>
+            </li>
+        }
+    </ul>
+
+    <nav aria-label="Sider">
+        @if (Model.Page > 1)
+        {
+            <a asp-page="Index" asp-route-q="@Model.Q" asp-route-category="@Model.Category" asp-route-sort="@Model.Sort" asp-route-p="@(Model.Page - 1)">Forrige</a>
+        }
+        <span>Side @Model.Page af @Model.Result.TotalPages</span>
+        @if (Model.Page < Model.Result.TotalPages)
+        {
+            <a asp-page="Index" asp-route-q="@Model.Q" asp-route-category="@Model.Category" asp-route-sort="@Model.Sort" asp-route-p="@(Model.Page + 1)">Næste</a>
+        }
+    </nav>
+}

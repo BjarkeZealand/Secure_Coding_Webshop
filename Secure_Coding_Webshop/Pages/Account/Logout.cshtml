@@ -1,0 +1,9 @@
+@page
+@model Secure_Coding_Webshop.Pages.Account.LogoutModel
+@{ ViewData["Title"] = "Log ud"; }
+
+<h1>Log ud</h1>
+@* Udlogning er en POST med anti-forgery token, så et fremmed website ikke kan logge dig ud via et billede/link *@
+<form method="post">
+    <button type="submit">Log ud</button>
+</form>

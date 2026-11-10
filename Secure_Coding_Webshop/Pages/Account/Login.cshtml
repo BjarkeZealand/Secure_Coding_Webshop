@@ -1,0 +1,25 @@
+@page
+@model Secure_Coding_Webshop.Pages.Account.LoginModel
+@{ ViewData["Title"] = "Log ind"; }
+
+<h1>Log ind</h1>
+
+<form method="post">
+    <div asp-validation-summary="ModelOnly" class="text-danger" role="alert"></div>
+    <input type="hidden" asp-for="ReturnUrl" />
+
+    <div>
+        <label asp-for="Input.Email">E-mail</label>
+        <input asp-for="Input.Email" type="email" autocomplete="username" maxlength="254" required autofocus />
+        <span asp-validation-for="Input.Email" class="text-danger"></span>
+    </div>
+
+    <div>
+        <label asp-for="Input.Password">Adgangskode</label>
+        <input asp-for="Input.Password" type="password" autocomplete="current-password" maxlength="128" required />
+        <span asp-validation-for="Input.Password" class="text-danger"></span>
+    </div>
+
+    <button type="submit">Log ind</button>
+</form>
+<p><a asp-page="ForgotPassword">Glemt adgangskode?</a> · <a asp-page="Register">Opret konto</a></p>

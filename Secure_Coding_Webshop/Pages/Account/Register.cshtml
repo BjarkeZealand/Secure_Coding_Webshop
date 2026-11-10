@@ -1,0 +1,57 @@
+@page
+@model Secure_Coding_Webshop.Pages.Account.RegisterModel
+@{ ViewData["Title"] = "Opret konto"; }
+
+<h1>Opret konto</h1>
+
+@if (Model.Submitted)
+{
+    @* Samme svar uanset om e-mailen allerede findes (ingen konto-enumeration) *@
+    <p role="status">Tak! Hvis e-mailadressen kan bruges, har vi sendt et link til at bekræfte din konto. Linket virker i 24 timer.</p>
+    <p><a asp-page="Login">Til login</a></p>
+}
+else
+{
+    <form method="post" autocomplete="off" novalidate>
+        <div asp-validation-summary="ModelOnly" class="text-danger" role="alert"></div>
+
+        <div>
+            <label asp-for="Input.Email">E-mail</label>
+            <input asp-for="Input.Email" type="email" autocomplete="email" maxlength="254" required />
+            <span asp-validation-for="Input.Email" class="text-danger"></span>
+        </div>
+
+        <div>
+            <label asp-for="Input.DisplayName">Navn</label>
+            <input asp-for="Input.DisplayName" autocomplete="name" maxlength="100" required />
+            <span asp-validation-for="Input.DisplayName" class="text-danger"></span>
+        </div>
+
+        <div>
+            <label asp-for="Input.Password">Adgangskode</label>
+            <input asp-for="Input.Password" id="new-password" type="password" autocomplete="new-password" minlength="12" maxlength="128" required />
+            <span asp-validation-for="Input.Password" class="text-danger"></span>
+            <div id="password-meter" aria-live="polite"></div>
+            <small>Mindst 12 tegn. En lang sætning med flere ord er bedre end tegnsalat.</small>
+            <p><button type="button" id="generate-passphrase">Foreslå en adgangskode</button> <output id="passphrase-output"></output></p>
+        </div>
+
+        <div>
+            <label asp-for="Input.ConfirmPassword">Gentag adgangskode</label>
+            <input asp-for="Input.ConfirmPassword" type="password" autocomplete="new-password" maxlength="128" required />
+            <span asp-validation-for="Input.ConfirmPassword" class="text-danger"></span>
+        </div>
+
+        <div>
+            <label>
+                <input asp-for="Input.AcceptPrivacy" type="checkbox" />
+                Jeg har læst og accepterer <a asp-page="/PrivacyPolicy" target="_blank" rel="noopener">privatlivspolitikken</a> (version @Model.PrivacyVersion)
+            </label>
+            <span asp-validation-for="Input.AcceptPrivacy" class="text-danger"></span>
+        </div>
+
+        <button type="submit">Opret konto</button>
+    </form>
+    <p>Har du allerede en konto? <a asp-page="Login">Log ind</a></p>
+    <script src="~/js/password-meter.js"></script>
+}

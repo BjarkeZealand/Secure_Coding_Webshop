@@ -1,0 +1,31 @@
+@page
+@model Secure_Coding_Webshop.Pages.Orders.IndexModel
+@{ ViewData["Title"] = "Mine ordrer"; }
+
+<h1>Mine ordrer</h1>
+@if (Model.Result.Items.Count == 0)
+{
+    <p>Du har ingen ordrer endnu.</p>
+}
+else
+{
+    <table>
+        <thead><tr><th>Dato</th><th>Ordre</th><th>Status</th><th>Total</th></tr></thead>
+        <tbody>
+        @foreach (var o in Model.Result.Items)
+        {
+            <tr>
+                <td>@o.CreatedAtUtc.ToLocalTime().ToString("dd-MM-yyyy HH:mm")</td>
+                <td><a asp-page="Details" asp-route-id="@o.OrderId">@o.OrderId.ToString()[..8]</a></td>
+                <td>@o.Status</td>
+                <td>@o.TotalAmount.ToString("N2") @o.Currency</td>
+            </tr>
+        }
+        </tbody>
+    </table>
+    <nav>
+        @if (Model.PageNo > 1) { <a asp-page="Index" asp-route-p="@(Model.PageNo - 1)">Forrige</a> }
+        <span>Side @Model.PageNo af @Model.Result.TotalPages</span>
+        @if (Model.PageNo < Model.Result.TotalPages) { <a asp-page="Index" asp-route-p="@(Model.PageNo + 1)">Næste</a> }
+    </nav>
+}

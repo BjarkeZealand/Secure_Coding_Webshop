@@ -1,0 +1,15 @@
+@page
+@model Secure_Coding_Webshop.Pages.Account.PrivacyModel
+@{ ViewData["Title"] = "Mine data"; }
+
+<h1>Mine data</h1>
+<h2>Hent mine data</h2>
+<p>Download alt, hvad vi har gemt om dig, som en JSON-fil.</p>
+<form method="post" asp-page-handler="Export"><button type="submit">Download mine data</button></form>
+
+@if (Model.CanDelete)
+{
+    <h2>Slet min konto</h2>
+    <p>Dine personoplysninger anonymiseres. Ordrer bevares uden navn, fordi vi skal opbevare bogføringsmateriale. Handlingen kan ikke fortrydes.</p>
+    <form method="post" asp-page-handler="Delete"><button type="submit">Slet min konto</button></form>
+}

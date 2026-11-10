@@ -1,0 +1,16 @@
+@page
+@model Secure_Coding_Webshop.Pages.Account.ReauthModel
+@{ ViewData["Title"] = "Bekræft din identitet"; }
+
+<h1>Bekræft din identitet</h1>
+<p>Af sikkerhedsgrunde skal du indtaste din adgangskode igen, før du kan fortsætte.</p>
+<form method="post">
+    <div asp-validation-summary="All"></div>
+    <input type="hidden" asp-for="ReturnUrl" />
+    <label>Adgangskode <input asp-for="Password" type="password" autocomplete="current-password" required /></label>
+    @if (Model.NeedsMfa)
+    {
+        <label>Kode fra authenticator-app <input asp-for="MfaCode" autocomplete="one-time-code" maxlength="10" required /></label>
+    }
+    <button type="submit">Fortsæt</button>
+</form>

@@ -1,0 +1,31 @@
+@page
+@model Secure_Coding_Webshop.Pages.SysAdmin.AlertsModel
+@{ ViewData["Title"] = "Alarmer"; }
+
+<h1>Alarmer (seneste 24 timer)</h1>
+@if (Model.Alerts.Count == 0)
+{
+    <p>Ingen alarmer.</p>
+}
+else
+{
+    <table>
+        <thead><tr><th>Type</th><th>Emne</th><th>Antal</th><th>Første</th><th>Sidste</th></tr></thead>
+        <tbody>
+        @foreach (var a in Model.Alerts)
+        {
+            <tr><td>@a.AlertType</td><td>@a.Subject</td><td>@a.EventCount</td><td>@a.FirstAtUtc.ToString("yyyy-MM-dd HH:mm")</td><td>@a.LastAtUtc.ToString("yyyy-MM-dd HH:mm")</td></tr>
+        }
+        </tbody>
+    </table>
+}
+
+<h2>Log-integritet</h2>
+<form method="post" asp-page-handler="Verify">
+    <button type="submit" name="log" value="SecurityEvents">Kontrollér sikkerhedslog</button>
+    <button type="submit" name="log" value="AuditLog">Kontrollér auditlog</button>
+</form>
+@if (Model.Chain is { } c)
+{
+    <p role="status">@c.LogName: @c.RowsChecked rækker kontrolleret, @c.BrokenRows brudte@(c.FirstBrokenId is { } id ? $" (første: {id})" : "").</p>
+}

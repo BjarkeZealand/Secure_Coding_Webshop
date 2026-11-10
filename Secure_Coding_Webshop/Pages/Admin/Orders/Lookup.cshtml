@@ -1,0 +1,19 @@
+@page
+@model Secure_Coding_Webshop.Pages.Admin.Orders.LookupModel
+@{ ViewData["Title"] = "Find ordre (support)"; }
+
+<h1>Find ordre</h1>
+<p>Alle opslag gemmes i audit-loggen.</p>
+<form method="get">
+    <label>Ordre-id <input name="id" value="@Model.IdText" maxlength="36" required /></label>
+    <button type="submit">Søg</button>
+</form>
+
+@if (Model.NotFoundResult) { <p>Ordren findes ikke.</p> }
+@if (Model.Order is { } o)
+{
+    <h2>Ordre @o.OrderId</h2>
+    <p>Kunde: @o.CustomerName · Status: @o.Status · @o.TotalAmount.ToString("N2") @o.Currency</p>
+    <p>@o.Shipping.Name, @o.Shipping.AddressLine, @o.Shipping.PostalCode @o.Shipping.City</p>
+    <ul>@foreach (var l in o.Lines) { <li>@l.Quantity × @l.ProductName (@l.UnitPrice.ToString("N2") kr)</li> }</ul>
+}

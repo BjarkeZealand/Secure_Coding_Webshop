@@ -1,0 +1,22 @@
+@page
+@model Secure_Coding_Webshop.Pages.Account.ConfirmEmailModel
+@{ ViewData["Title"] = "Bekræft e-mail"; }
+
+<h1>Bekræft e-mail</h1>
+@switch (Model.State)
+{
+    case Secure_Coding_Webshop.Pages.Account.ConfirmState.Ready:
+        <p>Klik for at bekræfte din e-mailadresse.</p>
+        @* POST i stedet for GET: mail-scannere og link-forhåndsvisning åbner links og ville ellers bruge tokenet op *@
+        <form method="post">
+            <input type="hidden" asp-for="Token" />
+            <button type="submit">Bekræft min e-mail</button>
+        </form>
+        break;
+    case Secure_Coding_Webshop.Pages.Account.ConfirmState.Done:
+        <p role="status">Tak, din e-mail er bekræftet. <a asp-page="Login">Log ind</a></p>
+        break;
+    default:
+        <p role="alert">Linket er ugyldigt eller udløbet. Opret kontoen igen, eller kontakt os.</p>
+        break;
+}

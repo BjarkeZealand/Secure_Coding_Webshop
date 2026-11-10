@@ -1,0 +1,20 @@
+@page
+@model Secure_Coding_Webshop.Pages.Account.MfaModel
+@{ ViewData["Title"] = "To-faktor-godkendelse"; }
+
+<h1>To-faktor-godkendelse</h1>
+<p>Indtast den 6-cifrede kode fra din authenticator-app, eller en af dine backupkoder.</p>
+
+<form method="post">
+    <div asp-validation-summary="ModelOnly" class="text-danger" role="alert"></div>
+    <input type="hidden" asp-for="ReturnUrl" />
+
+    <div>
+        <label asp-for="Code">Kode</label>
+        <input asp-for="Code" inputmode="text" autocomplete="one-time-code" maxlength="16" required autofocus />
+        <span asp-validation-for="Code" class="text-danger"></span>
+    </div>
+
+    <button type="submit">Bekræft</button>
+</form>
+<p><a asp-page="Login">Start forfra</a></p>

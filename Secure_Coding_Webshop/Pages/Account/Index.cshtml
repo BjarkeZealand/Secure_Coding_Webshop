@@ -1,0 +1,19 @@
+@page
+@model Secure_Coding_Webshop.Pages.Account.IndexModel
+@{ ViewData["Title"] = "Min konto"; }
+
+<h1>Min konto</h1>
+@if (Model.Profile is { } p)
+{
+    <dl>
+        <dt>Navn</dt><dd>@p.DisplayName</dd>
+        <dt>E-mail</dt><dd>@p.Email @(p.EmailConfirmed ? "(bekræftet)" : "(ikke bekræftet)")</dd>
+        <dt>To-faktor-login</dt><dd>@(p.MfaEnabled ? "Aktiv" : "Ikke aktiv")</dd>
+    </dl>
+    <ul>
+        <li><a href="/Orders">Mine ordrer</a></li>
+        <li><a asp-page="ChangePassword">Skift adgangskode</a></li>
+        <li><a asp-page="MfaSetup">To-faktor-login</a></li>
+        <li><a asp-page="Privacy">Mine data og sletning</a></li>
+    </ul>
+}

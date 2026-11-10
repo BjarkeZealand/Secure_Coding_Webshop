@@ -1,0 +1,42 @@
+@page
+@model Secure_Coding_Webshop.Pages.Admin.Products.IndexModel
+@{ ViewData["Title"] = "Produkter (admin)"; }
+
+<h1>Produkter</h1>
+<p><a asp-page="Edit">Nyt produkt</a> · <a asp-page="/Admin/Orders/Lookup">Find ordre</a></p>
+
+<table>
+    <thead><tr><th>Navn</th><th>Kategori</th><th>Pris</th><th>Lager</th><th>Status</th><th></th></tr></thead>
+    <tbody>
+    @foreach (var p in Model.Result.Items)
+    {
+        <tr>
+            <td>@p.Name</td>
+            <td>@p.CategoryName</td>
+            <td>@p.Price.ToString("N2") kr</td>
+            <td>@p.StockQuantity</td>
+            <td>@(p.IsActive ? "Aktiv" : "Slettet")</td>
+            <td>
+                <a asp-page="Edit" asp-route-id="@p.ProductId">Redigér</a>
+                @if (p.IsActive)
+                {
+                    <form method="post" asp-page-handler="Delete" asp-route-id="@p.ProductId" class="inline">
+                        <button type="submit">Slet</button>
+                    </form>
+                }
+                else
+                {
+                    <form method="post" asp-page-handler="Restore" asp-route-id="@p.ProductId" class="inline">
+                        <button type="submit">Gendan</button>
+                    </form>
+                }
+            </td>
+        </tr>
+    }
+    </tbody>
+</table>
+<nav>
+    @if (Model.PageNo > 1) { <a asp-page="Index" asp-route-p="@(Model.PageNo - 1)">Forrige</a> }
+    <span>Side @Model.PageNo af @Model.Result.TotalPages</span>
+    @if (Model.PageNo < Model.Result.TotalPages) { <a asp-page="Index" asp-route-p="@(Model.PageNo + 1)">Næste</a> }
+</nav>

@@ -1,0 +1,61 @@
+@page
+@model Secure_Coding_Webshop.Pages.SysAdmin.LogsModel
+@{ ViewData["Title"] = "Logs"; }
+
+<h1>Logs</h1>
+<p><a asp-page="Alerts">Alarmer og integritet</a></p>
+
+<form method="get">
+    <label>Log
+        <select name="log">
+            <option value="security" selected="@(Model.Log == "security")">Sikkerhedslog</option>
+            <option value="audit" selected="@(Model.Log == "audit")">Auditlog</option>
+        </select>
+    </label>
+    <label>Fra <input type="date" name="from" value="@Model.From?.ToString("yyyy-MM-dd")" /></label>
+    <label>Til <input type="date" name="to" value="@Model.To?.ToString("yyyy-MM-dd")" /></label>
+    <label>Type / handling <input name="type" value="@Model.Type" maxlength="50" /></label>
+    <label>Alvorlighed
+        <select name="severity">
+            <option value="">Alle</option>
+            @foreach (var s in new[] { "Info", "Warning", "Error", "Critical" })
+            {
+                <option value="@s" selected="@(Model.Severity == s)">@s</option>
+            }
+        </select>
+    </label>
+    <label>Bruger-id <input name="user" value="@Model.UserText" maxlength="36" /></label>
+    <button type="submit">Filtrér</button>
+</form>
+
+@if (Model.Log == "security")
+{
+    <table>
+        <thead><tr><th>Tid (UTC)</th><th>Type</th><th>Niveau</th><th>Bruger</th><th>IP</th><th>Ressource</th><th>Detaljer</th></tr></thead>
+        <tbody>
+        @* Logtekst er brugerstyret input: Razor HTML-encoder den, så den ikke kan angribe en admin *@
+        @foreach (var e in Model.Events.Items)
+        {
+            <tr><td>@e.OccurredAtUtc.ToString("yyyy-MM-dd HH:mm:ss")</td><td>@e.EventType</td><td>@e.Severity</td><td>@e.UserId</td><td>@e.IpAddress</td><td>@e.Resource</td><td>@e.Details</td></tr>
+        }
+        </tbody>
+    </table>
+    <p>@Model.Events.Total rækker · side @Model.PageNo af @Model.Events.TotalPages</p>
+}
+else
+{
+    <table>
+        <thead><tr><th>Tid (UTC)</th><th>Handling</th><th>Entitet</th><th>Bruger</th><th>Før</th><th>Efter</th></tr></thead>
+        <tbody>
+        @foreach (var a in Model.Audit.Items)
+        {
+            <tr><td>@a.OccurredAtUtc.ToString("yyyy-MM-dd HH:mm:ss")</td><td>@a.Action</td><td>@a.EntityType @a.EntityId</td><td>@a.ActorUserId</td><td><code>@a.OldValueJson</code></td><td><code>@a.NewValueJson</code></td></tr>
+        }
+        </tbody>
+    </table>
+    <p>@Model.Audit.Total rækker · side @Model.PageNo af @Model.Audit.TotalPages</p>
+}
+<nav>
+    @if (Model.PageNo > 1) { <a asp-page="Logs" asp-all-route-data="@Model.RouteFor(Model.PageNo - 1)">Forrige</a> }
+    @if (Model.PageNo < Model.TotalPages) { <a asp-page="Logs" asp-all-route-data="@Model.RouteFor(Model.PageNo + 1)">Næste</a> }
+</nav>

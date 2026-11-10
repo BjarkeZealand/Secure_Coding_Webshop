@@ -1,0 +1,14 @@
+@page
+@model Secure_Coding_Webshop.Pages.Payment.MockCheckoutModel
+@{ ViewData["Title"] = "Betaling (test)"; }
+
+<h1>Testbetaling</h1>
+<p>Dette står i stedet for betalingsudbyderens side. Der indtastes ingen kortdata her.</p>
+<p>Ordre @Model.OrderId</p>
+
+<form method="post">
+    <input type="hidden" name="orderId" value="@Model.OrderId" />
+    <input type="hidden" name="providerRef" value="@Model.ProviderRef" />
+    <button type="submit" name="outcome" value="success">Betal</button>
+    <button type="submit" name="outcome" value="failure">Afvis betaling</button>
+</form>

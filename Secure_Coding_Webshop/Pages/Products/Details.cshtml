@@ -1,0 +1,29 @@
+@page "{id:int}"
+@model Secure_Coding_Webshop.Pages.Products.DetailsModel
+@{ ViewData["Title"] = Model.Product?.Name ?? "Produkt"; }
+
+@if (Model.Product is { } p)
+{
+    <h1>@p.Name</h1>
+    @if (p.ImageFileName is not null)
+    {
+        <img src="/img/@p.ImageFileName" alt="@p.Name" width="320" />
+    }
+    <p>@p.CategoryName</p>
+    <p style="white-space: pre-line">@p.Description</p>
+    <p><strong>@p.Price.ToString("N2") kr</strong></p>
+
+    @if (Model.Message is not null) { <p role="status">@Model.Message</p> }
+
+    @if (p.StockQuantity > 0)
+    {
+        <form method="post" asp-page-handler="Add" asp-route-id="@p.ProductId">
+            <label>Antal <input type="number" name="quantity" value="1" min="1" max="@Math.Min(99, p.StockQuantity)" required /></label>
+            <button type="submit">Læg i kurv</button>
+        </form>
+    }
+    else
+    {
+        <p>Udsolgt</p>
+    }
+}

@@ -1,0 +1,22 @@
+@page "{id:guid}"
+@model Secure_Coding_Webshop.Pages.Orders.DetailsModel
+@{ ViewData["Title"] = "Ordre"; }
+
+@if (Model.Order is { } o)
+{
+    <h1>Ordre @o.OrderId.ToString()[..8]</h1>
+    <p>Status: <strong>@o.Status</strong> · @o.CreatedAtUtc.ToLocalTime().ToString("dd-MM-yyyy HH:mm")</p>
+    <table>
+        <thead><tr><th>Produkt</th><th>Stykpris</th><th>Antal</th></tr></thead>
+        <tbody>
+        @foreach (var l in o.Lines)
+        {
+            <tr><td>@l.ProductName</td><td>@l.UnitPrice.ToString("N2") kr</td><td>@l.Quantity</td></tr>
+        }
+        </tbody>
+        <tfoot><tr><th colspan="2">Total</th><th>@o.TotalAmount.ToString("N2") @o.Currency</th></tr></tfoot>
+    </table>
+    <h2>Levering</h2>
+    <p>@o.Shipping.Name<br />@o.Shipping.AddressLine<br />@o.Shipping.PostalCode @o.Shipping.City</p>
+    @if (o.Status == "Pending") { <p>Betalingen er ikke gennemført endnu.</p> }
+}
